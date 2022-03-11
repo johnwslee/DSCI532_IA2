@@ -70,7 +70,6 @@ app$layout(
     )
 )
 
-
 app$callback(
     output('ranking_chart', 'figure'),
     list(input('year_slider', 'value'),
@@ -105,6 +104,5 @@ app$callback(
       return(ggplotly(chart, height = 3000, width=800, tooltip = c(y_axis)))
     }
 )
-
 
 app$run_server(host = '0.0.0.0')
