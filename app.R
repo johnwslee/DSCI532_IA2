@@ -72,9 +72,9 @@ app$layout(
 
 app$callback(
     output('ranking_chart', 'figure'),
-    list(input('topic_dropdown', 'value'),
-         input('year_slider', 'value')),
-    function(y_axis, x_year) {
+    list(input('year_slider', 'value'),
+         input('topic_dropdown', 'value')),
+    function(x_year, y_axis) {
       df <- gapminder %>% 
         filter(year == x_year)
       bar <- df %>% 
@@ -86,15 +86,23 @@ app$callback(
             fill = continent, 
             label = ranking) +
         geom_bar(stat = 'identity') +
-        geom_text()
-      
-      chart <- bar +
+        geom_text() +
         theme(text = element_text(size = 20)) +
         theme_bw() +
         scale_x_continuous(labels = comma)
       
+      if (y_axis == "pop") {
+        chart <- bar + labs(x = "Population", y = "Country")
+      }
+      if (y_axis == "lifeExp") {
+        chart <- bar + labs(x = "Life Expectancy [years]", y = "Country")
+      }
+      if (y_axis == "gdpPercap") {
+        chart <- bar + labs(x = "GDP per Capita [USD]", y = "Country")
+      }
+      
       return(ggplotly(chart, height = 3000, width=800, tooltip = c(y_axis)))
     }
- )
+)
 
 app$run_server(debug = T)
