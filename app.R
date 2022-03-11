@@ -5,10 +5,12 @@ library(dashBootstrapComponents)
 library(ggplot2)
 library(plotly)
 library(gapminder)
-
-app <- Dash$new(external_stylesheets = dbcThemes$BOOTSTRAP)
+library(tidyverse)
+library(scales)
 
 df <- gapminder
+
+app <- Dash$new(external_stylesheets = dbcThemes$BOOTSTRAP)
 
 app$layout(
     dbcContainer(
@@ -38,7 +40,21 @@ app$layout(
                                     min = 1952,
                                     max = 2007,
                                     step = 5,
-                                    value = 1957
+                                    value = 1957,
+                                    marks = list(
+                                      "1952" = "1952",
+                                      "1957" = "1957",
+                                      "1962" = "1962",
+                                      "1967" = "1967",
+                                      "1972" = "1972",
+                                      "1977" = "1977",
+                                      "1982" = "1982",
+                                      "1987" = "1987",
+                                      "1992" = "1992",
+                                      "1997" = "1997",
+                                      "2002" = "2002",
+                                      "2007" = "2007"
+                                    )
                                 )
                             )
                         ),
@@ -58,26 +74,26 @@ app$callback(
     output('ranking_chart', 'figure'),
     list(input('topic_dropdown', 'value'),
          input('year_slider', 'value')),
-    function(x_year, y_axis) {
-        df <- df %>%
-            filter(year == x_year)
-        bar <- df %>%
-            arrange(desc(!!sym(y_axis))) %>%
-            mutate(ranking = paste0('#', as.numeric(rownames(df)))) %>%
-            ggplot(aes(x = !!sym(y_axis),
-                       y = reorder(country, !!sym(y_axis)),
-                       fill = continent,
-                       label = ranking)) +
-            geom_bar(stat = "identity") +
-            geom_text()
-
-        chart <- bar +
-            theme(text = element_text(size = 20)) +
-            theme_bw() +
-            scale_x_continuous(labels = comma)
-
-        ggplotly(chart, height = 3000, width=800, tooltip = c(y_axis))
-
+    function(y_axis, x_year) {
+      df <- gapminder %>% 
+        filter(year == x_year)
+      bar <- df %>% 
+        arrange(desc(!!sym(y_axis))) %>% 
+        mutate(ranking = paste0('#', as.numeric(rownames(df)))) %>% 
+        ggplot() +
+        aes(x = !!sym(y_axis), 
+            y = reorder(country, !!sym(y_axis)), 
+            fill = continent, 
+            label = ranking) +
+        geom_bar(stat = 'identity') +
+        geom_text()
+      
+      chart <- bar +
+        theme(text = element_text(size = 20)) +
+        theme_bw() +
+        scale_x_continuous(labels = comma)
+      
+      return(ggplotly(chart, height = 3000, width=800, tooltip = c(y_axis)))
     }
  )
 
