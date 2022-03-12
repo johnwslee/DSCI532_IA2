@@ -7,6 +7,7 @@ library(plotly)
 library(gapminder)
 library(tidyverse)
 library(scales)
+library(ggthemes)
 
 df <- gapminder
 
