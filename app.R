@@ -5,7 +5,6 @@ library(dashBootstrapComponents)
 library(ggplot2)
 library(plotly)
 library(gapminder)
-library(tidyverse)
 library(scales)
 
 df <- gapminder
