@@ -16,7 +16,7 @@ app <- Dash$new(external_stylesheets = dbcThemes$BOOTSTRAP)
 app$layout(
     dbcContainer(
         list(
-            htmlH1('Our Changin World'),
+            htmlH1('Our Changing World'),
             htmlBr(),
                 dbcRow(
                     list(
